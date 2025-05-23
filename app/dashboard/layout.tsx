@@ -15,10 +15,10 @@ export default function DashboardLayout({
 }) {
   return (
     <RouteProtector>
-      <div className="flex min-h-screen flex-col w-screen">
+      <div className="flex min-h-screen flex-col">
         <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container flex h-14 items-center px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center">
+          <div className="container flex h-14 items-center mx-auto px-4">
+            <div className="flex items-center flex-1">
               <MobileNav />
               <Link
                 href="/dashboard/hello"
@@ -29,17 +29,17 @@ export default function DashboardLayout({
                 </span>
                 <span className="font-bold sm:hidden">Dashboard</span>
               </Link>
-              <nav className="hidden md:flex items-center space-x-4 text-sm font-medium lg:space-x-6">
+              <nav className="hidden md:flex items-center space-x-6 text-sm font-medium">
                 <NavLink href="/dashboard/hello">Home</NavLink>
                 <NavLink href="/dashboard/orders">Orders</NavLink>
               </nav>
-            </div>
-            <div className="ml-auto hidden md:flex items-center space-x-2">
-              <AuthButton />
+              <div className="ml-auto hidden md:flex items-center">
+                <AuthButton />
+              </div>
             </div>
           </div>
         </header>
-        <main className="flex-1 container py-4 sm:py-6 md:py-8 px-4 sm:px-6 lg:px-8">
+        <main className="flex-1 container mx-auto py-6 px-4">
           {children}
         </main>
       </div>

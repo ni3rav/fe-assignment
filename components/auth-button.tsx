@@ -9,7 +9,6 @@ export function AuthButton() {
   if (session) {
     return (
       <div className="flex items-center gap-4">
-        <span>Signed in as {session.user?.email}</span>
         <Button onClick={() => signOut()}>Sign out</Button>
       </div>
     );

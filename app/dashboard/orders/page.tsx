@@ -78,18 +78,18 @@ export default function OrdersPage() {
   const isDesktop = useMediaQuery("(min-width: 768px)");
 
   return (
-    <div className="space-y-4 sm:space-y-6 md:space-y-8">
+    <div className="w-full max-w-full space-y-6">
       <div>
         <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
           Pizza Orders
         </h2>
-        <p className="text-sm sm:text-base text-muted-foreground">
+        <p className="text-muted-foreground mt-1">
           Manage and track your pizza orders
         </p>
       </div>
 
       {isDesktop ? (
-        <div className="rounded-lg border shadow-sm overflow-hidden overflow-x-auto">
+        <div className="w-full rounded-lg border shadow-sm">
           <Table>
             <TableHeader>
               <TableRow>
@@ -123,9 +123,9 @@ export default function OrdersPage() {
           </Table>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="grid gap-4">
           {mockOrders.map((order) => (
-            <Card key={order.orderId}>
+            <Card key={order.orderId} className="w-full">
               <CardHeader className="pb-2">
                 <div className="flex justify-between items-center">
                   <CardTitle className="text-sm font-medium">
