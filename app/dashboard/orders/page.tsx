@@ -55,6 +55,14 @@ const getStatusColor = (status: string): string => {
   }
 };
 
+const getOrderIdNumber = (orderId: string): number => {
+  return parseInt(orderId.replace("PZA", ""));
+};
+
+const getDateValue = (dateStr: string): number => {
+  return new Date(dateStr).getTime();
+};
+
 export default function OrdersPage() {
   const [sortField, setSortField] = useState<SortField>("orderDate");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
@@ -76,6 +84,21 @@ export default function OrdersPage() {
     .filter((order) => statusFilter === "All" || order.status === statusFilter)
     .sort((a, b) => {
       const modifier = sortOrder === "asc" ? 1 : -1;
+
+      if (sortField === "orderDate") {
+        return (
+          (getDateValue(a.orderDate) - getDateValue(b.orderDate)) * modifier
+        );
+      }
+
+      if (sortField === "orderId") {
+        return (
+          (getOrderIdNumber(a.orderId) - getOrderIdNumber(b.orderId)) *
+          modifier
+        );
+      }
+
+      // For customerName, keep using string comparison
       if (a[sortField] < b[sortField]) return -1 * modifier;
       if (a[sortField] > b[sortField]) return 1 * modifier;
       return 0;
