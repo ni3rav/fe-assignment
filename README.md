@@ -7,6 +7,7 @@ This repository contains a take-home assignment created by Nirav as part of an a
 - **Framework**: [Next.js](https://nextjs.org/)
 - **Styling**: [Tailwind CSS](https://tailwindcss.com/) with [shadcn/ui](https://ui.shadcn.com/)
 - **Authentication**: [NextAuth.js](https://next-auth.js.org/) with Google OAuth support
+- **Database**: [Neon](https://neon.tech) for serverless PostgreSQL
 - **Deployment**: [Vercel](https://vercel.com)
 
 ## Features
@@ -40,6 +41,7 @@ This repository contains a take-home assignment created by Nirav as part of an a
    GOOGLE_CLIENT_SECRET=your_google_client_secret
    NEXTAUTH_SECRET=your_nextauth_secret
    NEXTAUTH_URL=http://localhost:3000
+   DATABASE_URL=your_connection_string
    ```
 
 4. **Initialize the database**
