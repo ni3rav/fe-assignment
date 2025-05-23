@@ -11,8 +11,10 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/use-media-query";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { ErrorCard } from "@/components/ui/error-card";
 import mockData from "./mock-orders.json";
 
 type Order = {
@@ -67,9 +69,45 @@ export default function OrdersPage() {
   const [sortField, setSortField] = useState<SortField>("orderDate");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [orders, setOrders] = useState<Order[]>([]);
   const isMobile = useMediaQuery("(max-width: 768px)");
 
-  const orders = (mockData as OrderData).orders;
+  useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        setIsLoading(true);
+        // Simulate API delay
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setOrders((mockData as OrderData).orders);
+      } catch (err) {
+        setError(err as Error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadOrders();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[400px]">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <ErrorCard
+        title="Failed to load orders"
+        message={error.message}
+        retry={() => window.location.reload()}
+      />
+    );
+  }
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
