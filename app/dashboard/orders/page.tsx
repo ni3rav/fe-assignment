@@ -11,153 +11,188 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import mockData from "./mock-orders.json";
 
-const mockOrders = [
-  {
-    orderId: "PZA001",
-    customerName: "John Doe",
-    pizzaType: "Margherita",
-    quantity: 1,
-    orderDate: "2025-05-23 10:30",
-    status: "Delivered",
-  },
-  {
-    orderId: "PZA002",
-    customerName: "Jane Smith",
-    pizzaType: "Pepperoni",
-    quantity: 2,
-    orderDate: "2025-05-23 11:00",
-    status: "Out for Delivery",
-  },
-  {
-    orderId: "PZA003",
-    customerName: "Alice Johnson",
-    pizzaType: "Veggie Supreme",
-    quantity: 1,
-    orderDate: "2025-05-23 12:15",
-    status: "Preparing",
-  },
-  {
-    orderId: "PZA004",
-    customerName: "Bob Brown",
-    pizzaType: "Margherita",
-    quantity: 3,
-    orderDate: "2025-05-23 13:00",
-    status: "Pending",
-  },
-  {
-    orderId: "PZA005",
-    customerName: "Charlie Davis",
-    pizzaType: "Pepperoni",
-    quantity: 1,
-    orderDate: "2025-05-23 14:30",
-    status: "Cancelled",
-  },
-];
+type Order = {
+  orderId: string;
+  customerName: string;
+  pizzaType: string;
+  quantity: number;
+  orderDate: string;
+  status: string;
+};
 
-const getStatusBadgeVariant = (
-  status: string
-): "default" | "secondary" | "destructive" | "outline" => {
+type OrderData = {
+  orders: Order[];
+};
+
+type SortField = "orderId" | "orderDate" | "customerName";
+type SortOrder = "asc" | "desc";
+type StatusFilter =
+  | "All"
+  | "Pending"
+  | "Preparing"
+  | "Out for Delivery"
+  | "Delivered"
+  | "Cancelled";
+
+const getStatusColor = (status: string): string => {
   switch (status) {
-    case "Delivered":
-      return "default";
-    case "Out for Delivery":
-      return "secondary";
-    case "Preparing":
-      return "outline";
     case "Pending":
-      return "secondary";
+      return "bg-yellow-500";
+    case "Preparing":
+      return "bg-blue-500";
+    case "Out for Delivery":
+      return "bg-purple-500";
+    case "Delivered":
+      return "bg-green-500";
     case "Cancelled":
-      return "destructive";
+      return "bg-red-500";
     default:
-      return "default";
+      return "bg-gray-500";
   }
 };
 
 export default function OrdersPage() {
-  const isDesktop = useMediaQuery("(min-width: 768px)");
+  const [sortField, setSortField] = useState<SortField>("orderDate");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>("All");
+  const isMobile = useMediaQuery("(max-width: 768px)");
+
+  const orders = (mockData as OrderData).orders;
+
+  const handleSort = (field: SortField) => {
+    if (sortField === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortField(field);
+      setSortOrder("asc");
+    }
+  };
+
+  const filteredAndSortedOrders = orders
+    .filter((order) => statusFilter === "All" || order.status === statusFilter)
+    .sort((a, b) => {
+      const modifier = sortOrder === "asc" ? 1 : -1;
+      if (a[sortField] < b[sortField]) return -1 * modifier;
+      if (a[sortField] > b[sortField]) return 1 * modifier;
+      return 0;
+    });
+
+  const SortButton = ({
+    field,
+    children,
+  }: {
+    field: SortField;
+    children: React.ReactNode;
+  }) => (
+    <Button
+      variant="ghost"
+      onClick={() => handleSort(field)}
+      className="font-semibold"
+    >
+      {children}
+      {sortField === field && (
+        <span className="ml-1">{sortOrder === "asc" ? "↑" : "↓"}</span>
+      )}
+    </Button>
+  );
 
   return (
-    <div className="w-full max-w-full space-y-6">
-      <div>
-        <h2 className="text-2xl sm:text-3xl font-bold tracking-tight">
-          Pizza Orders
-        </h2>
-        <p className="text-muted-foreground mt-1">
-          Manage and track your pizza orders
-        </p>
-      </div>
-
-      {isDesktop ? (
-        <div className="w-full rounded-lg border shadow-sm">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead className="w-[100px]">Order ID</TableHead>
-                <TableHead>Customer Name</TableHead>
-                <TableHead>Pizza Type</TableHead>
-                <TableHead className="text-right">Quantity</TableHead>
-                <TableHead>Order Date</TableHead>
-                <TableHead>Status</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {mockOrders.map((order) => (
-                <TableRow key={order.orderId}>
-                  <TableCell className="font-medium">{order.orderId}</TableCell>
-                  <TableCell>{order.customerName}</TableCell>
-                  <TableCell>{order.pizzaType}</TableCell>
-                  <TableCell className="text-right">{order.quantity}</TableCell>
-                  <TableCell>{order.orderDate}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={getStatusBadgeVariant(order.status)}
-                      className="whitespace-nowrap"
-                    >
-                      {order.status}
-                    </Badge>
-                  </TableCell>
-                </TableRow>
+    <div className="container mx-auto p-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Pizza Orders</CardTitle>
+          <div className="flex flex-col sm:flex-row gap-4 mt-4">
+            <div className="flex gap-2">
+              {[
+                "All",
+                "Pending",
+                "Preparing",
+                "Out for Delivery",
+                "Delivered",
+                "Cancelled",
+              ].map((status) => (
+                <Button
+                  key={status}
+                  variant={statusFilter === status ? "default" : "outline"}
+                  onClick={() => setStatusFilter(status as StatusFilter)}
+                  className={isMobile ? "text-sm px-2" : ""}
+                >
+                  {status}
+                </Button>
               ))}
-            </TableBody>
-          </Table>
-        </div>
-      ) : (
-        <div className="grid gap-4">
-          {mockOrders.map((order) => (
-            <Card key={order.orderId} className="w-full">
-              <CardHeader className="pb-2">
-                <div className="flex justify-between items-center">
-                  <CardTitle className="text-sm font-medium">
-                    Order {order.orderId}
-                  </CardTitle>
-                  <Badge
-                    variant={getStatusBadgeVariant(order.status)}
-                    className="whitespace-nowrap"
-                  >
-                    {order.status}
-                  </Badge>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-1 text-sm">
-                  <div className="text-muted-foreground">Customer:</div>
-                  <div>{order.customerName}</div>
-
-                  <div className="text-muted-foreground">Pizza:</div>
-                  <div>{order.pizzaType}</div>
-
-                  <div className="text-muted-foreground">Quantity:</div>
-                  <div>{order.quantity}</div>
-
-                  <div className="text-muted-foreground">Date:</div>
-                  <div>{order.orderDate}</div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {isMobile ? (
+            <div className="space-y-4">
+              {filteredAndSortedOrders.map((order) => (
+                <Card key={order.orderId}>
+                  <CardContent className="pt-4">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <div className="font-semibold">{order.orderId}</div>
+                        <div className="text-sm text-gray-600">
+                          {order.customerName}
+                        </div>
+                      </div>
+                      <Badge className={getStatusColor(order.status)}>
+                        {order.status}
+                      </Badge>
+                    </div>
+                    <div className="text-sm">
+                      <div>Pizza: {order.pizzaType}</div>
+                      <div>Quantity: {order.quantity}</div>
+                      <div>Date: {order.orderDate}</div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>
+                    <SortButton field="orderId">Order ID</SortButton>
+                  </TableHead>
+                  <TableHead>
+                    <SortButton field="customerName">Customer Name</SortButton>
+                  </TableHead>
+                  <TableHead>Pizza Type</TableHead>
+                  <TableHead>Quantity</TableHead>
+                  <TableHead>
+                    <SortButton field="orderDate">Order Date</SortButton>
+                  </TableHead>
+                  <TableHead>Status</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredAndSortedOrders.map((order) => (
+                  <TableRow key={order.orderId}>
+                    <TableCell className="font-medium">
+                      {order.orderId}
+                    </TableCell>
+                    <TableCell>{order.customerName}</TableCell>
+                    <TableCell>{order.pizzaType}</TableCell>
+                    <TableCell>{order.quantity}</TableCell>
+                    <TableCell>{order.orderDate}</TableCell>
+                    <TableCell>
+                      <Badge className={getStatusColor(order.status)}>
+                        {order.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
     </div>
   );
 }

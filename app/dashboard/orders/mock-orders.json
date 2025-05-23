@@ -1,0 +1,60 @@
+{
+  "orders": [
+    {
+      "orderId": "PZA001",
+      "customerName": "John Doe",
+      "pizzaType": "Margherita",
+      "quantity": 1,
+      "orderDate": "2025-05-23 10:30",
+      "status": "Delivered"
+    },
+    {
+      "orderId": "PZA002",
+      "customerName": "Jane Smith",
+      "pizzaType": "Pepperoni",
+      "quantity": 2,
+      "orderDate": "2025-05-23 11:00",
+      "status": "Out for Delivery"
+    },
+    {
+      "orderId": "PZA003",
+      "customerName": "Alice Johnson",
+      "pizzaType": "Veggie Supreme",
+      "quantity": 1,
+      "orderDate": "2025-05-23 12:15",
+      "status": "Preparing"
+    },
+    {
+      "orderId": "PZA004",
+      "customerName": "Bob Brown",
+      "pizzaType": "Margherita",
+      "quantity": 3,
+      "orderDate": "2025-05-23 13:00",
+      "status": "Pending"
+    },
+    {
+      "orderId": "PZA005",
+      "customerName": "Charlie Davis",
+      "pizzaType": "Pepperoni",
+      "quantity": 2,
+      "orderDate": "2025-05-23 13:45",
+      "status": "Cancelled"
+    },
+    {
+      "orderId": "PZA006",
+      "customerName": "Eve Wilson",
+      "pizzaType": "Veggie Supreme",
+      "quantity": 1,
+      "orderDate": "2025-05-23 14:20",
+      "status": "Pending"
+    },
+    {
+      "orderId": "PZA007",
+      "customerName": "Frank Miller",
+      "pizzaType": "Margherita",
+      "quantity": 4,
+      "orderDate": "2025-05-23 15:00",
+      "status": "Preparing"
+    }
+  ]
+}
