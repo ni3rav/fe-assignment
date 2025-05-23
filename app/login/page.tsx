@@ -2,8 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { AuthButton } from "@/components/auth-button";
+import { useState } from "react";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -28,6 +27,7 @@ export default function LoginPage() {
       }
     } catch (err) {
       setError("An unexpected error occurred");
+      console.error(err)
     } finally {
       setIsLoading(false);
     }
